@@ -51,7 +51,7 @@ function setSideActive(sideLeft: boolean, sideRight: boolean): void {
 @import './css/root.less';
 .fade-enter-active,
 .fade-leave-active {
-	transition: all 0.3s;
+	transition: all 0.4s;
 }
 
 .fade-enter-from,

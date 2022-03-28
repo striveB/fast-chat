@@ -99,6 +99,16 @@ css: {
 nest new fast-chat-server
 ```
 
+## 2.3 使用Webscoket
+
+安装所需包
+
+```bash
+npm i --save @nestjs/websockets @nestjs/platform-socket.io
+```
+
+参考：[官方示例](https://github.com/nestjs/nest/tree/master/sample/02-gatewayshttps://github.com/nestjs/nest/tree/master/sample/02-gateways)
+
 # 三、遇到的问题
 
 ## 3.1 在ts中不可以使用require('XXX')
@@ -109,7 +119,7 @@ nest new fast-chat-server
 npm install @types/node --save-dev
 ```
 
-## 3.2 使用require('xxx') eslint报错
+## 3.2 require('xxx')引入包 eslint报错
 
 错误信息：<mark># Require statement not part of import statement.(@typescript-eslint/no-var-requires)</mark>
 
@@ -117,7 +127,7 @@ npm install @types/node --save-dev
 
 ```javascript
 rules: {
-	'@typescript-eslint/no-var-requires': 0
+    '@typescript-eslint/no-var-requires': 0
 }
 ```
 
@@ -137,16 +147,30 @@ npm i @rollup/plugin-alias -D
 const { resolve } = require('path');
 const srcPath = resolve(__dirname, 'src');
 export default defineConfig({
-	//配置路径别名
-	resolve: {
-		alias: [
-			{
-				find: '@',
-				replacement: srcPath
-			}
-		]
-	}
+    //配置路径别名
+    resolve: {
+        alias: [
+            {
+                find: '@',
+                replacement: srcPath
+            }
+        ]
+    }
 });
+```
+
+## 3.4 vue-router 4.x 删除 router-link 标签的to属性
+
+```html
+将
+
+<router-link to="/about" tag="span" event="dblclick">About Us</router-link>
+
+替换成
+
+<router-link to="/about" custom v-slot="{ navigate }">
+  <span @click="navigate" @keypress.enter="navigate" role="link">About Us</span>
+</router-link>
 ```
 
 # 四、插件安装

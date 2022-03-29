@@ -99,7 +99,7 @@ css: {
 nest new fast-chat-server
 ```
 
-## 2.3 使用Webscoket
+## 2.3 使用Webscokets
 
 安装所需包
 
@@ -108,6 +108,15 @@ npm i --save @nestjs/websockets @nestjs/platform-socket.io
 ```
 
 参考：[官方示例](https://github.com/nestjs/nest/tree/master/sample/02-gatewayshttps://github.com/nestjs/nest/tree/master/sample/02-gateways)
+
+#### 2.3.1 安装适配器
+
+```bash
+npm i --save socket.io-redis
+
+
+npm i --save socket.io/redis-adapter
+```
 
 # 三、遇到的问题
 

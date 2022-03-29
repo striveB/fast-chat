@@ -15,12 +15,10 @@ export class EventGateway {
   server: Server;
 
   @SubscribeMessage('juns')
-  juns(@MessageBody() data: any): object[] {
-    console.log(data);
-    return [
-      {
-        context: '123',
-      },
-    ];
+  juns(@MessageBody() data: any): void {
+    const result = {
+      context: data,
+    };
+    this.server.emit('juns', result);
   }
 }

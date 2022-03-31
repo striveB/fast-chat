@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "ant-design-vue": "^2.2.8",
     "enquire.js": "^2.1.6",
     "less": "^4.1.2",
     "socket.io-client": "^4.4.1",

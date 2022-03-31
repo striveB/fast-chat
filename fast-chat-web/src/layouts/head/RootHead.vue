@@ -9,8 +9,8 @@ onBeforeRouteUpdate(to => {
 </script>
 <template>
 	<div class="root-head">
-		<div class="back" v-if="nowUrl != '/'">
-			<router-link to="/" tag="span">
+		<div class="back" v-if="nowUrl != '/' && nowUrl != '/weclome'">
+			<router-link to="/weclome" tag="span">
 				<span class="iconfont icon-fanhui"></span>
 			</router-link>
 		</div>

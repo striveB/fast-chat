@@ -4,7 +4,7 @@
 
 ## 1.1 技术栈
 
-`vite` 、`vue3`、`pinia`、`vue-router`、`axios`、`less`
+`vite` 、`vue3`、`pinia`、`vue-router`、`axios`、`less`、`antvue`
 
 ## 1.2 构建项目
 
@@ -19,6 +19,10 @@ npm i pinia -D
 npm i vue-router -D
 
 # 安装axios
+
+
+# 安装antvue
+npm i --save ant-design-vue@next
 ```
 
 ## 1.3 安装代码规范

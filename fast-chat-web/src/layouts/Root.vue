@@ -49,14 +49,4 @@ function setSideActive(sideLeft: boolean, sideRight: boolean): void {
 </template>
 <style lang="less" scoped>
 @import './css/root.less';
-.fade-enter-active,
-.fade-leave-active {
-	transition: all 0.4s;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-	transform: scale(1.01);
-}
 </style>

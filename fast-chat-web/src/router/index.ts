@@ -7,8 +7,13 @@ const routes: RouteRecordRaw[] = [
 		component: () => import('@/layouts/Root.vue'),
 		children: [
 			{
-				name: '欢迎页',
+				name: '登录',
 				path: '',
+				component: () => import('@/pages/Login.vue')
+			},
+			{
+				name: '🏹 F-C',
+				path: '/weclome',
 				component: () => import('@/pages/Weclome.vue')
 			},
 			{

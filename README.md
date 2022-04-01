@@ -113,16 +113,79 @@ npm i --save @nestjs/websockets @nestjs/platform-socket.io
 
 参考：[官方示例](https://github.com/nestjs/nest/tree/master/sample/02-gatewayshttps://github.com/nestjs/nest/tree/master/sample/02-gateways)
 
-#### 2.3.1 安装适配器
+#### 2.3.1 连接数据库
 
 ```bash
-npm i --save socket.io-redis
-
-
-npm i --save socket.io/redis-adapter
+npm install --save @nestjs/typeorm typeorm mysql2
 ```
 
-# 三、遇到的问题
+```typescript
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { EventsModule } from './events/events.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+@Module({
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'root',
+      database: 'fast_chat',
+      entities: [],
+      synchronize: true,
+    }),
+    EventsModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
+# 三、数据库设计(fast_chat)
+
+## 4.1 用户表 user
+
+- id int //唯一id 自增
+
+- userId varchar(20) //用户id
+
+- userName varchar(12) //用户名
+
+- userPassword varchar(12) //密码
+
+- avatar varchar(50) //头像
+
+- describe varchart(100)//个性签名
+
+- createDate datetime //账号创建时间
+
+## 4.2 用户与好友的关联表 user_friend
+
+- id int //唯一id 自增
+
+- userId int //自己的id
+
+- friendId int //好友的id
+
+## 4.3 用户之间的消息表 user_message
+
+- id bigint //唯一id 自增
+
+- userId int //发送人的id
+
+- friendId int //接收人的id
+
+- msgType int //消息类型 1：文本 2：图片 3：视频
+
+- content varchar(255) //消息内容
+
+- createDate datetime //发送时间
+
+# 四、遇到的问题
 
 ## 3.1 在ts中不可以使用require('XXX')
 
@@ -172,7 +235,7 @@ export default defineConfig({
 });
 ```
 
-## 3.4 vue-router 4.x 删除 router-link 标签的to属性
+## 3.4 vue-router 4.x 删除了 router-link 标签的to属性
 
 ```html
 将
@@ -186,7 +249,7 @@ export default defineConfig({
 </router-link>
 ```
 
-# 四、插件安装
+# 五、插件安装
 
 ## 4.1 enquire.js
 

@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { PrimaryGeneratedColumn, Column, PrimaryColumn, Entity } from 'typeorm';
 
 @Entity()
@@ -5,12 +6,18 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @PrimaryColumn('uuid')
+  @Column()
   userId: string;
 
+  @ApiProperty({
+    description: '用户名',
+  })
   @Column()
   userName: string;
 
+  @ApiProperty({
+    description: '密码',
+  })
   @Column()
   userPassword: string;
 
@@ -19,6 +26,9 @@ export class User {
   })
   avatar: string;
 
+  @ApiProperty({
+    description: '个人介绍',
+  })
   @Column({
     nullable: true,
   })

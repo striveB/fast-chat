@@ -113,7 +113,7 @@ npm i --save @nestjs/websockets @nestjs/platform-socket.io
 
 参考：[官方示例](https://github.com/nestjs/nest/tree/master/sample/02-gatewayshttps://github.com/nestjs/nest/tree/master/sample/02-gateways)
 
-#### 2.3.1 连接数据库
+## 2.4 连接数据库
 
 ```bash
 npm install --save @nestjs/typeorm typeorm mysql2
@@ -143,6 +143,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   providers: [AppService],
 })
 export class AppModule {}
+```
+
+## 2.5 安装swagger
+
+```bash
+npm install --save @nestjs/swagger swagger-ui-express
 ```
 
 # 三、数据库设计(fast_chat)

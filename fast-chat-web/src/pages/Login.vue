@@ -2,25 +2,41 @@
 import { chatStore } from '../store/chat';
 import { useRouter } from 'vue-router';
 import { reactive, ref } from 'vue';
+import { login } from '../services/apis/user';
+import { message } from 'ant-design-vue';
 
 const chat = chatStore();
 const router = useRouter();
-let userInfo = reactive({
-	userId: '',
-	userName: ''
+let loginParams = reactive({
+	userName: '',
+	userPassword: ''
 });
-function goChat() {
-	chat.setUserInfo(userInfo);
-	router.push({
-		path: '/weclome'
+function toLogin() {
+	login(loginParams).then((res: any) => {
+		let { code, msg, data } = res;
+		if (code === 200) {
+			message.success(msg);
+			chat.connectSocket(data);
+			router.push({
+				path: '/weclome'
+			});
+		} else {
+			message.error(msg);
+		}
 	});
 }
 </script>
 <template>
 	<div class="weclome">
-		<a-input v-model:value="userInfo.userId" placeholder="请输入账号id" />
-		<a-input v-model:value="userInfo.userName" placeholder="请输入账号名称" />
-		<a-button @click="goChat">进入聊天室</a-button>
+		<a-input
+			v-model:value="loginParams.userName"
+			placeholder="请输入账号名称"
+		/>
+		<a-input
+			v-model:value="loginParams.userPassword"
+			placeholder="请输入密码"
+		/>
+		<a-button @click="toLogin">进入聊天室</a-button>
 	</div>
 </template>
 <style lang="less" scoped>

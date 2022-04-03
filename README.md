@@ -19,7 +19,7 @@ npm i pinia -D
 npm i vue-router -D
 
 # 安装axios
-
+npm i axios
 
 # 安装antvue
 npm i --save ant-design-vue@next

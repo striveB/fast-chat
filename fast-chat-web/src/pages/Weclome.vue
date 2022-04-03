@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { chatStore } from '../store/chat';
 const chat = chatStore();
-if (!chat.socket) {
-	//连接socket
-	chat.connectSocket();
-}
+// if (!chat.socket) {
+// 	//连接socket
+// 	chat.connectSocket();
+// }
 </script>
 <template>
 	<div class="weclome">

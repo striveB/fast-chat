@@ -8,16 +8,16 @@ interface guardsInter {
 const ignoreRouter = ['/'];
 const loginGuard: NavigationGuardWithThis<undefined> = (to, from, next) => {
 	const chat = chatStore();
-	const isLogin = chat?.userInfo?.userId;
+	const isLogin = JSON.parse(localStorage.getItem('userInfo'));
 	if (!ignoreRouter.includes(to.fullPath) || isLogin) {
 		if (isLogin) {
 			if (to.fullPath === '/') {
 				next('/weclome');
 				return;
 			}
-			next();
 		} else {
 			next('/');
+			chat.logout();
 		}
 	}
 	next();

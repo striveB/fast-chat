@@ -12,4 +12,6 @@ interface Message {
 interface User {
 	userId: string;
 	userName: string;
+	avatar: string;
+	descibe: string;
 }

@@ -10,6 +10,11 @@ export default defineConfig({
 			'/socket.io': {
 				target: 'http://localhost:3002',
 				changeOrigin: true
+			},
+			'/api': {
+				target: 'http://localhost:3001',
+				changeOrigin: true,
+				rewrite: path => path.replace(/^\/api/, '')
 			}
 		}
 	},

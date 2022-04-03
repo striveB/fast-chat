@@ -16,7 +16,12 @@ export const chatStore = defineStore('chatStore', {
 		};
 	},
 	actions: {
-		connectSocket() {
+		connectSocket(userInfo: User) {
+			if (userInfo) {
+				localStorage.setItem('userInfo', JSON.stringify(userInfo));
+			}
+			this.userInfo =
+				JSON.parse(localStorage.getItem('userInfo')!) || this.userInfo;
 			const socket: Socket = io('', {
 				query: {
 					userId: this.userInfo?.userId
@@ -31,6 +36,7 @@ export const chatStore = defineStore('chatStore', {
 			});
 			//实时获取在线人数
 			socket.on('online', async (userIds: string[]) => {
+				console.log('获取到在线用户：', userIds);
 				this.friends = userIds;
 			});
 
@@ -53,6 +59,7 @@ export const chatStore = defineStore('chatStore', {
 			this.friends = [];
 			this.socket.disconnect();
 			this.socket = null;
+			localStorage.removeItem('userInfo');
 		}
 	}
 });

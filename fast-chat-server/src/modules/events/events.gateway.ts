@@ -3,6 +3,7 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { RCode } from '../../common/constant/rcode';
@@ -28,6 +29,28 @@ export class EventGateway {
     return { code: RCode.OK, msg: '连接成功！' };
   }
 
+  //建立好友房间
+  @SubscribeMessage('createFriendRoom')
+  createFriendRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    const { userId, friendId } = data;
+    console.log(data);
+    if (userId && friendId) {
+      if (userId !== friendId) {
+        const roomId = this.createRoomId(userId, friendId);
+        client.join(roomId);
+        console.log(roomId);
+        return { code: RCode.OK, msg: '房间建立成功！' };
+      } else {
+        return { code: RCode.FAIL, msg: '不能与自己建立房间！' };
+      }
+    } else {
+      return { code: RCode.FAIL, msg: '房间建立失败！' };
+    }
+  }
+
   @SubscribeMessage('chatMessage')
   chatMessage(@MessageBody() data: any) {
     console.log(data);
@@ -38,7 +61,8 @@ export class EventGateway {
         friendId,
         content,
       };
-      this.server.to(friendId).emit('chatMessage', message);
+      const roomId = this.createRoomId(userId, friendId);
+      this.server.to(roomId).emit('chatMessage', message);
       return { code: RCode.OK, msg: '发送成功！' };
     } else {
       return { code: RCode.FAIL, msg: '发送失败！' };
@@ -47,7 +71,7 @@ export class EventGateway {
 
   // socket断连钩子
   async handleDisconnect(client: Socket): Promise<any> {
-    console.log(client.handshake.query.uuId, '断开连接！');
+    console.log(client.handshake.query.userId, '断开连接！');
     this.getOnlineUserIds();
   }
   //统计在线所有用户的id
@@ -59,5 +83,9 @@ export class EventGateway {
     });
     userIdArr = Array.from(new Set(userIdArr));
     this.server.emit('online', userIdArr);
+  }
+  //建立规则
+  createRoomId(userId: string, friendId: string): string {
+    return userId > friendId ? userId + '' + friendId : friendId + '' + userId;
   }
 }

@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia';
+import { message } from 'ant-design-vue';
 import { io, Socket } from 'socket.io-client';
 interface chatState {
 	socket: Socket | null;
 	messages: Message[];
 	userInfo: User | null;
-	friends: string[];
+	friends: User[];
 }
 export const chatStore = defineStore('chatStore', {
 	state(): chatState {
@@ -34,10 +35,15 @@ export const chatStore = defineStore('chatStore', {
 				// socket.emit('chatData', { name: 'jun233s' });
 				this.socket = socket;
 			});
-			//实时获取在线人数
-			socket.on('online', async (userIds: string[]) => {
-				console.log('获取到在线用户：', userIds);
-				this.friends = userIds;
+			//获取用户所有好友
+			socket.on('friends', async (res: any) => {
+				const { code, msg, data: friends } = res;
+				if (code === 200) {
+					console.log('获取所有好友：', friends);
+					this.friends = friends;
+				} else {
+					message.error(msg);
+				}
 			});
 
 			socket.on('chatMessage', async (msg: Message) => {

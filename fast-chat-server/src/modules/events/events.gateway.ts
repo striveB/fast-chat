@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import {
   MessageBody,
   SubscribeMessage,
@@ -7,6 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { RCode } from '../../common/constant/rcode';
+import { UserService } from '../user/user.service';
 interface Message {
   userId: number;
   friendId: number;
@@ -15,16 +17,20 @@ interface Message {
 
 @WebSocketGateway(3002)
 export class EventGateway {
+  constructor(private readonly userService: UserService) {}
+
   @WebSocketServer()
   server: Server;
   //scoket 连接成功钩子
   async handleConnection(client: Socket) {
-    const userRoom = client.handshake.query.userId;
+    const userRoom = client.handshake.query.userId as string;
     if (userRoom) {
       client.join('system'); //每个登录的用户将加入到系统房间（用于发送系统通知）
       client.join(userRoom);
+      this.userService.findUserFriends(userRoom).then((friends) => {
+        this.server.to(userRoom).emit('friends', friends);
+      });
       console.log(userRoom + '已连接!');
-      this.getOnlineUserIds();
     }
     return { code: RCode.OK, msg: '连接成功！' };
   }
@@ -72,7 +78,7 @@ export class EventGateway {
   // socket断连钩子
   async handleDisconnect(client: Socket): Promise<any> {
     console.log(client.handshake.query.userId, '断开连接！');
-    this.getOnlineUserIds();
+    // this.getOnlineUserIds();
   }
   //统计在线所有用户的id
   getOnlineUserIds(): void {
@@ -84,7 +90,7 @@ export class EventGateway {
     userIdArr = Array.from(new Set(userIdArr));
     this.server.emit('online', userIdArr);
   }
-  //建立规则
+  //创建房间id
   createRoomId(userId: string, friendId: string): string {
     return userId > friendId ? userId + '' + friendId : friendId + '' + userId;
   }

@@ -26,4 +26,9 @@ export class UserController {
     console.log(userId);
     return this.userService.findOne(userId);
   }
+
+  @Get('friends')
+  findUserFriends(@Query('userId') userId: string) {
+    return this.userService.findUserFriends(userId);
+  }
 }

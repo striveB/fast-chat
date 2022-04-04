@@ -1,11 +1,35 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useRoute, onBeforeRouteUpdate } from 'vue-router';
+import {
+	useRoute,
+	onBeforeRouteUpdate,
+	RouteLocationNormalized
+} from 'vue-router';
+import { chatStore } from '../../store/chat';
 const route = useRoute();
+const chat = chatStore();
+const title = ref('');
+setTitle();
 let nowUrl = ref(route.fullPath);
 onBeforeRouteUpdate(to => {
 	nowUrl.value = to.fullPath;
+	setTitle(to);
 });
+
+function setTitle(to?: RouteLocationNormalized) {
+	let r = to || route;
+	let userId = r.params.fCode;
+	if (userId) {
+		let friend = chat.friends.find(fr => fr.userId == userId);
+		if (friend) {
+			title.value = friend.userName;
+		} else {
+			title.value = '???';
+		}
+	} else {
+		title.value = r.name as string;
+	}
+}
 </script>
 <template>
 	<div class="root-head">
@@ -15,7 +39,7 @@ onBeforeRouteUpdate(to => {
 			</router-link>
 		</div>
 		<div class="title">
-			<h3>{{ route.name }}</h3>
+			<h3>{{ title }}</h3>
 		</div>
 		<div class="more">
 			<span class="iconfont icon-qita" style="font-size: 20px"></span>

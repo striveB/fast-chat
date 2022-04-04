@@ -151,6 +151,30 @@ export class AppModule {}
 npm install --save @nestjs/swagger swagger-ui-express
 ```
 
+## 2.6 使用两表联查
+
+```javascript
+const friends = await this.userRepository
+  .createQueryBuilder('user')
+    .leftJoinAndSelect(
+       UserFriend,
+       'user_friend',
+       'user.userId = user_friend.friendId',
+     )
+     .where(`'${userId}' = user_friend.userId`)
+     .select(
+       `
+        user.id as id,
+        user.userId as userId,
+        user.userName as userName,
+        user.avatar as avatar
+      `,
+  )
+ .getRawMany();
+```
+
+参考链接：[typeorm 多表关联查询 - 简书](https://www.jianshu.com/p/a8eda4e6b5ac)
+
 # 三、数据库设计(fast_chat)
 
 ## 4.1 用户表 user

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { EventsModule } from './modules/events/events.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
+import { FriendModule } from './modules/friend/friend.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -14,10 +15,11 @@ import { UserModule } from './modules/user/user.module';
       password: 'root',
       database: 'fast_chat',
       entities: ['dist/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      synchronize: false,
     }),
     EventsModule,
     UserModule,
+    FriendModule,
   ],
   controllers: [AppController],
   providers: [AppService],

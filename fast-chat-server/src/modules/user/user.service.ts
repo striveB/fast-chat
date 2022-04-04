@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { RCode } from '../../common/constant/rcode';
+import { UserFriend } from '../friend/entity/user_friend.entity';
 import { Result } from '../../common/vo/result';
 @Injectable()
 export class UserService {
@@ -51,9 +52,12 @@ export class UserService {
     try {
       let user;
       if (userId) {
-        user = await this.userRepository.findOne({
-          where: { userId: userId },
-        });
+        user = await this.userRepository
+          .createQueryBuilder('user')
+          .where(`user.userId = ${userId}`)
+          .printSql()
+          .getOne();
+
         if (user) {
           return { code: RCode.OK, msg: '获取用户成功！', data: user };
         } else {
@@ -62,6 +66,36 @@ export class UserService {
       }
     } catch (error) {
       return { code: RCode.ERROR, msg: '获取用户失败！', data: error };
+    }
+  }
+  async findUserFriends(userId: string) {
+    try {
+      if (userId) {
+        const friends = await this.userRepository
+          .createQueryBuilder('user')
+          .leftJoinAndSelect(
+            UserFriend,
+            'user_friend',
+            'user.userId = user_friend.friendId',
+          )
+          .where(`'${userId}' = user_friend.userId`)
+          .select(
+            `
+          user.id as id,
+          user.userId as userId,
+          user.userName as userName,
+          user.avatar as avatar
+        `,
+          )
+          .getRawMany();
+
+        return { code: RCode.OK, msg: '好友获取成功！', data: friends };
+      } else {
+        return { code: RCode.FAIL, msg: '好友获取失败！' };
+      }
+    } catch (err) {
+      console.log(err);
+      return { code: RCode.ERROR, msg: '好友获取失败！', data: {} };
     }
   }
 }

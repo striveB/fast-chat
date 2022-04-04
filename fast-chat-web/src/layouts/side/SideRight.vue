@@ -1,22 +1,45 @@
 <script setup lang="ts">
 import { chatStore } from '../../store/chat';
+import { message } from 'ant-design-vue';
+import { useRouter } from 'vue-router';
 const chat = chatStore();
+const router = useRouter();
+function toChat(userId: string) {
+	router.push(`/chat-panel/${userId}`);
+	createRoom(userId);
+}
+function createRoom(friendId: string) {
+	//进入聊天界面后建立好友聊天房间
+	chat.socket.emit(
+		'createFriendRoom',
+		{
+			userId: chat?.userInfo?.userId,
+			friendId
+		},
+		(res: any) => {
+			let { code, msg } = res;
+			if (code === 200) {
+				// aMessage.info(msg);
+			} else {
+				message.error(msg);
+			}
+			console.log(res);
+		}
+	);
+}
 </script>
 <template>
 	<div class="sideRight">
 		<ul class="friedGroup">
-			<router-link
+			<li
+				class="friend"
 				v-for="(user, index) in chat.friends"
 				:key="index"
-				:to="'/chat-panel/' + user"
-				custom
-				v-slot="{ navigate }"
+				@click="toChat(user.userId)"
 			>
-				<li class="friend" @click="navigate">
-					<a-avatar icon="F"></a-avatar>
-					{{ user }}
-				</li>
-			</router-link>
+				<a-avatar icon="F" :src="user.avatar"></a-avatar>
+				{{ user.userName }}
+			</li>
 		</ul>
 	</div>
 </template>

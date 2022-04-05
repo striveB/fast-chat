@@ -1,11 +1,16 @@
 import { defineStore } from 'pinia';
 import { message } from 'ant-design-vue';
 import { io, Socket } from 'socket.io-client';
+import { findMessages } from '../services/apis/user';
+import { nextTick } from 'vue';
+import { useRouter } from 'vue-router';
 interface chatState {
 	socket: Socket | null;
 	messages: Message[];
 	userInfo: User | null;
 	friends: User[];
+	chatFriend: User | undefined | null;
+	[key: string]: any;
 }
 export const chatStore = defineStore('chatStore', {
 	state(): chatState {
@@ -13,7 +18,9 @@ export const chatStore = defineStore('chatStore', {
 			socket: null,
 			messages: [],
 			userInfo: null,
-			friends: []
+			friends: [],
+			chatFriend: null,
+			router: useRouter()
 		};
 	},
 	actions: {
@@ -31,8 +38,6 @@ export const chatStore = defineStore('chatStore', {
 			});
 			socket.on('connect', async () => {
 				console.log('连接成功');
-				// 获取聊天室所需所有信息
-				// socket.emit('chatData', { name: 'jun233s' });
 				this.socket = socket;
 			});
 			//获取用户所有好友
@@ -46,14 +51,55 @@ export const chatStore = defineStore('chatStore', {
 				}
 			});
 
-			socket.on('chatMessage', async (msg: Message) => {
-				this.messages.push(msg);
-				console.log(msg);
+			socket.on('chatMessage', async (res: any) => {
+				const { code, data: message } = res;
+				if (code === 200) {
+					this.messages.push(message);
+					this.scrollToBottom();
+				}
 			});
 
 			socket.on('disconnect', async () => {
 				console.log('断开了连接...');
 			});
+		},
+		createRoom(friendId: string) {
+			//进入聊天界面后建立好友聊天房间
+			this.socket.emit(
+				'createFriendRoom',
+				{
+					userId: this.userInfo?.userId,
+					friendId
+				},
+				(res: any) => {
+					const { code, msg } = res;
+					if (code === 200) {
+						// aMessage.info(msg);
+					} else {
+						message.error(msg);
+					}
+				}
+			);
+			//获取与好友的消息
+			findMessages({ userId: this.userInfo?.userId as string, friendId }).then(
+				(res: any) => {
+					const { code, msg, data: messages } = res;
+					if (code === 200) {
+						this.messages = messages;
+						this.scrollToBottom();
+						this.findChatFriend(friendId);
+					} else {
+						message.error(msg);
+					}
+				}
+			);
+		},
+		//获取正在聊天的好友信息
+		findChatFriend(friendId: string) {
+			this.chatFriend = this.friends.find(fr => fr.userId == friendId);
+			if (!this.chatFriend) {
+				this.router.push('/');
+			}
 		},
 		//登录成功后设置用户信息
 		setUserInfo(userInfo: User) {
@@ -66,6 +112,12 @@ export const chatStore = defineStore('chatStore', {
 			this.socket.disconnect();
 			this.socket = null;
 			localStorage.removeItem('userInfo');
+		},
+		scrollToBottom() {
+			nextTick(() => {
+				const msgEl = document.getElementById('msgEl');
+				msgEl?.scrollTo(0, msgEl?.scrollHeight);
+			});
 		}
 	}
 });

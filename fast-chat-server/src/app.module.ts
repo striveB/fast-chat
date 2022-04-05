@@ -5,6 +5,7 @@ import { EventsModule } from './modules/events/events.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { FriendModule } from './modules/friend/friend.module';
+import { MessageModule } from './modules/message/message.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -20,6 +21,7 @@ import { FriendModule } from './modules/friend/friend.module';
     EventsModule,
     UserModule,
     FriendModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

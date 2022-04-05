@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { chatStore } from '../../store/chat';
-import { defineProps, reactive } from 'vue';
+import { defineProps } from 'vue';
 const chat = chatStore();
 const props = defineProps({
 	messages: {
@@ -8,7 +8,8 @@ const props = defineProps({
 		default: () => {
 			return [];
 		}
-	}
+	},
+	friend: {}
 });
 </script>
 <template>
@@ -25,7 +26,9 @@ const props = defineProps({
 						:size="50"
 						icon="F"
 						:src="
-							msg.userId == chat?.userInfo?.userId ? chat?.userInfo?.avatar : ''
+							msg.userId == chat?.userInfo?.userId
+								? chat?.userInfo?.avatar
+								: friend?.avatar
 						"
 					/>
 					<div class="content">

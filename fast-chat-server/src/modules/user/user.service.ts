@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { RCode } from '../../common/constant/rcode';
 import { UserFriend } from '../friend/entity/user_friend.entity';
-import { Result } from '../../common/vo/result';
 @Injectable()
 export class UserService {
   constructor(

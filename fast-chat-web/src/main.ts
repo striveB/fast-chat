@@ -4,11 +4,13 @@ import pinia from './store';
 import router from './router';
 import bootstrap from './bootstarap';
 import Antd from 'ant-design-vue';
+import plugins from './plugin';
 import '@/theme/index.less';
 import 'ant-design-vue/dist/antd.css';
 
 bootstrap(router);
 const app = createApp(App);
+app.use(plugins);
 app.use(pinia);
 app.use(router);
 app.use(Antd);

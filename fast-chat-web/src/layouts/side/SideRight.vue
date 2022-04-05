@@ -1,35 +1,16 @@
 <script setup lang="ts">
 import { chatStore } from '../../store/chat';
-import { message } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
 const chat = chatStore();
 const router = useRouter();
 function toChat(userId: string) {
 	router.push(`/chat-panel/${userId}`);
-	createRoom(userId);
-}
-function createRoom(friendId: string) {
-	//进入聊天界面后建立好友聊天房间
-	chat.socket.emit(
-		'createFriendRoom',
-		{
-			userId: chat?.userInfo?.userId,
-			friendId
-		},
-		(res: any) => {
-			let { code, msg } = res;
-			if (code === 200) {
-				// aMessage.info(msg);
-			} else {
-				message.error(msg);
-			}
-			console.log(res);
-		}
-	);
+	chat.createRoom(userId);
 }
 </script>
 <template>
 	<div class="sideRight">
+		<h3>🤞 好友列表</h3>
 		<ul class="friedGroup">
 			<li
 				class="friend"
@@ -45,6 +26,12 @@ function createRoom(friendId: string) {
 </template>
 <style lang="less" scoped>
 .sideRight {
+	h3 {
+		text-align: center;
+		border-bottom: 1px solid @primary-color-3;
+		padding-bottom: 10px;
+		font-weight: bold;
+	}
 	.friedGroup {
 		.friend {
 			cursor: pointer;

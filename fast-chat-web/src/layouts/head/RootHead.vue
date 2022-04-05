@@ -8,7 +8,7 @@ import {
 import { chatStore } from '../../store/chat';
 const route = useRoute();
 const chat = chatStore();
-const title = ref('');
+const title = ref<string | null>('title');
 setTitle();
 let nowUrl = ref(route.fullPath);
 onBeforeRouteUpdate(to => {
@@ -20,12 +20,7 @@ function setTitle(to?: RouteLocationNormalized) {
 	let r = to || route;
 	let userId = r.params.fCode;
 	if (userId) {
-		let friend = chat.friends.find(fr => fr.userId == userId);
-		if (friend) {
-			title.value = friend.userName;
-		} else {
-			title.value = '???';
-		}
+		title.value = null;
 	} else {
 		title.value = r.name as string;
 	}
@@ -39,7 +34,7 @@ function setTitle(to?: RouteLocationNormalized) {
 			</router-link>
 		</div>
 		<div class="title">
-			<h3>{{ title }}</h3>
+			<h3>{{ title || chat.chatFriend?.userName }}</h3>
 		</div>
 		<div class="more">
 			<span class="iconfont icon-qita" style="font-size: 20px"></span>

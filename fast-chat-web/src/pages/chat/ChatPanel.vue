@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { message as aMessage } from 'ant-design-vue';
-import { ref } from 'vue';
+import { ref, onDeactivated, onBeforeUnmount } from 'vue';
 import { useRoute } from 'vue-router';
 import { chatStore } from '../../store/chat';
 import MsgWindow from './MsgWindow.vue';
@@ -9,6 +9,12 @@ const chat = chatStore();
 let content = ref('');
 let sending = ref(false);
 let msgEl = ref<HTMLElement>();
+
+let friendId = route.params.fCode as string;
+//首次进入聊天界面时创建房间
+if (friendId) {
+	chat.createRoom(friendId);
+}
 function send() {
 	if (sending.value) {
 		return;
@@ -16,27 +22,29 @@ function send() {
 	sending.value = true;
 	let message: Message = {
 		userId: chat.userInfo?.userId || '',
-		friendId: route.params.fCode + '',
+		friendId,
 		content: content.value
 	};
-	// chat.messages.push(message);
 	content.value = '';
 	chat.socket.emit('chatMessage', message, (res: ReqBody) => {
 		let { code, msg } = res;
-		if (code == 200) {
-			aMessage.info(msg);
-		} else {
+		if (code != 200) {
 			aMessage.error(msg);
 		}
 		sending.value = false;
-		msgEl.value?.scrollTo(0, msgEl.value?.scrollHeight);
 	});
 }
+onBeforeUnmount(() => {
+	chat.messages = [];
+});
 </script>
 <template>
 	<div class="chatPanel">
-		<div class="messages" ref="msgEl">
-			<msg-window :messages="chat.messages"></msg-window>
+		<div class="messages" ref="msgEl" id="msgEl">
+			<msg-window
+				:messages="chat.messages"
+				:friend="chat.chatFriend"
+			></msg-window>
 		</div>
 		<div class="footer">
 			<div class="msgSend">

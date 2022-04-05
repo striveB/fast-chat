@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import {
   MessageBody,
   SubscribeMessage,
@@ -9,6 +8,8 @@ import {
 import { Server, Socket } from 'socket.io';
 import { RCode } from '../../common/constant/rcode';
 import { UserService } from '../user/user.service';
+import { MessageService } from '../message/message.service';
+import { UserMessage } from '../message/entity/user_message.entity';
 interface Message {
   userId: number;
   friendId: number;
@@ -17,7 +18,10 @@ interface Message {
 
 @WebSocketGateway(3002)
 export class EventGateway {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly messageService: MessageService,
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -47,7 +51,7 @@ export class EventGateway {
       if (userId !== friendId) {
         const roomId = this.createRoomId(userId, friendId);
         client.join(roomId);
-        console.log(roomId);
+        console.log('创建了房间号', roomId);
         return { code: RCode.OK, msg: '房间建立成功！' };
       } else {
         return { code: RCode.FAIL, msg: '不能与自己建立房间！' };
@@ -57,18 +61,22 @@ export class EventGateway {
     }
   }
 
+  //发送消息
   @SubscribeMessage('chatMessage')
-  chatMessage(@MessageBody() data: any) {
-    console.log(data);
-    const { userId, friendId, content } = data;
+  async chatMessage(@MessageBody() data: any) {
+    const { userId, friendId, content, msgType, createDate } = data;
     if (userId && friendId) {
-      const message: Message = {
+      const message: UserMessage = {
         userId,
         friendId,
+        msgType: msgType || 1,
         content,
+        createDate: createDate || new Date(),
       };
       const roomId = this.createRoomId(userId, friendId);
-      this.server.to(roomId).emit('chatMessage', message);
+      console.log('发送到房间号：', roomId);
+      const res = await this.messageService.saveMessage(message);
+      this.server.to(roomId).emit('chatMessage', res);
       return { code: RCode.OK, msg: '发送成功！' };
     } else {
       return { code: RCode.FAIL, msg: '发送失败！' };

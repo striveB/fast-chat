@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { chatStore } from '../store/chat';
 import { useRouter } from 'vue-router';
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import { login } from '../services/apis/user';
 import { message } from 'ant-design-vue';
+import cookie from 'js-cookie';
 
 const chat = chatStore();
 const router = useRouter();
@@ -11,12 +12,15 @@ let loginParams = reactive({
 	userName: '',
 	userPassword: ''
 });
+
 function toLogin() {
 	login(loginParams).then((res: any) => {
 		let { code, msg, data } = res;
+		let { user, token } = data;
 		if (code === 200) {
 			message.success(msg);
-			chat.connectSocket(data);
+			chat.connectSocket(user);
+			cookie.set('token', token);
 			router.push({
 				path: '/weclome'
 			});

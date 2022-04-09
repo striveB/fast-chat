@@ -1,9 +1,11 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { MessageService } from './message.service';
 
 @Controller('message')
 @ApiTags('消息')
+@UseGuards(AuthGuard('jwt'))
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 

@@ -4,6 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import { findMessages } from '../services/apis/user';
 import { nextTick } from 'vue';
 import { useRouter } from 'vue-router';
+import cookie from 'js-cookie';
 interface chatState {
 	socket: Socket | null;
 	messages: Message[];
@@ -83,13 +84,12 @@ export const chatStore = defineStore('chatStore', {
 			//获取与好友的消息
 			findMessages({ userId: this.userInfo?.userId as string, friendId }).then(
 				(res: any) => {
-					const { code, msg, data: messages } = res;
+					console.log(res);
+					const { code, data: messages } = res;
 					if (code === 200) {
 						this.messages = messages;
 						this.scrollToBottom();
 						this.findChatFriend(friendId);
-					} else {
-						message.error(msg);
 					}
 				}
 			);
@@ -111,6 +111,7 @@ export const chatStore = defineStore('chatStore', {
 			this.friends = [];
 			this.socket.disconnect();
 			this.socket = null;
+			cookie.set('token', '');
 			localStorage.removeItem('userInfo');
 		},
 		scrollToBottom() {

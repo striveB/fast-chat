@@ -23,6 +23,9 @@ npm i axios
 
 # 安装antvue
 npm i --save ant-design-vue@next
+
+# 安装cookie
+npm i --save @types/js-cookie js-cookie
 ```
 
 ## 1.3 安装代码规范
@@ -101,15 +104,22 @@ css: {
 
 ```bash
 nest new fast-chat-server
+
+# 安装socket.io所需包
+npm i --save @nestjs/websockets @nestjs/platform-socket.io
+
+# 安装swagger所需包
+npm install --save @nestjs/swagger swagger-ui-express
+
+# 安装jwt认证所需包
+npm install --save @nestjs/passport passport passport-local
+npm install --save-dev @types/passport-local
+npm install --save @nestjs/jwt passport-jwt
+npm install --save-dev @types/passport-jwt
+
 ```
 
 ## 2.3 使用Webscokets
-
-安装所需包
-
-```bash
-npm i --save @nestjs/websockets @nestjs/platform-socket.io
-```
 
 参考：[官方示例](https://github.com/nestjs/nest/tree/master/sample/02-gatewayshttps://github.com/nestjs/nest/tree/master/sample/02-gateways)
 
@@ -145,13 +155,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 export class AppModule {}
 ```
 
-## 2.5 安装swagger
-
-```bash
-npm install --save @nestjs/swagger swagger-ui-express
-```
-
-## 2.6 使用两表联查
+## 2.5 使用两表联查
 
 ```javascript
 const friends = await this.userRepository

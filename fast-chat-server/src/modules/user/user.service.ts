@@ -31,21 +31,6 @@ export class UserService {
       return { code: RCode.ERROR, msg: '注册失败' };
     }
   }
-  async login(userName: string, userPassword: string) {
-    try {
-      const user = await this.userRepository.findOne({
-        where: { userName: userName, userPassword: userPassword },
-      });
-      delete user.userPassword;
-      if (user) {
-        return { code: RCode.OK, msg: '登录成功！', data: user };
-      } else {
-        return { code: RCode.FAIL, msg: '账号或密码错误！' };
-      }
-    } catch (err) {
-      return { code: RCode.ERROR, msg: '系统错误！' };
-    }
-  }
   //根据id获取用户
   async findOne(userId: string) {
     try {

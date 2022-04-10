@@ -71,7 +71,7 @@ export class EventGateway {
         friendId,
         msgType: msgType || 1,
         content,
-        createDate: createDate || new Date(),
+        // createDate: createDate || new Date(),
       };
       const roomId = this.createRoomId(userId, friendId);
       console.log('发送到房间号：', roomId);

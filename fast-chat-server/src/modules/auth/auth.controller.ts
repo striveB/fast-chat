@@ -12,6 +12,11 @@ export class AuthController {
   //   @UseGuards(AuthGuard('local'))
   @Post('/login')
   login(@Body() user: User) {
-    return this.authService.login(user.userName, user.userPassword);
+    return this.authService.login(user);
+  }
+
+  @Post('/register')
+  register(@Body() user: User) {
+    return this.authService.register(user);
   }
 }

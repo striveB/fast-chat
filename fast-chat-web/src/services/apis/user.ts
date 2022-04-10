@@ -1,10 +1,15 @@
 import request from '../index';
-//登录
-export async function login(params: {
+interface loginParams {
 	userName: string;
 	userPassword: string;
-}): Promise<void> {
+}
+//登录
+export async function login(params: loginParams): Promise<void> {
 	return await request.post('/auth/login', params);
+}
+//注册
+export async function register(params: loginParams): Promise<void> {
+	return await request.post('/auth/register', params);
 }
 //获取与好友的信息
 export async function findMessages(params: {

@@ -9,4 +9,17 @@ export class FriendService {
     @InjectRepository(UserFriend)
     private readonly friendRepository: Repository<UserFriend>,
   ) {}
+
+  async addFriend({userId, friendId}) {
+    if(!userId || !friendId) {
+        return {code: RCode.FAIL, msg: '好友添加失败！'};
+    }
+    try {
+        await this.friendRepository.save({userId, friendId})
+        await this.friendRepository.save({userId: friendId, friendId: userId})
+        return {code: RCode.OK, msg: '好友添加成功！'};
+    } catch(err) {
+        return {code: RCode.ERROR, msg: '好友添加失败：' + err.message};
+    }
+  }
 }

@@ -11,26 +11,6 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  //添加用户
-  async insert(user: User) {
-    const users = await this.userRepository.find({
-      where: [
-        {
-          userName: user.userName,
-        },
-      ],
-    });
-    if (users.length) {
-      return { code: RCode.FAIL, msg: '用户名重复' };
-    }
-    user.userId = new Date().toString();
-    const newUser = await this.userRepository.save(user);
-    if (newUser) {
-      return { code: RCode.OK, msg: '注册成功！', data: newUser };
-    } else {
-      return { code: RCode.ERROR, msg: '注册失败' };
-    }
-  }
   //根据id获取用户
   async findOne(userId: string) {
     try {

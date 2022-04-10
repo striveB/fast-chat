@@ -18,5 +18,5 @@ export class UserMessage {
   content: string;
 
   @Column()
-  createDate: Date;
+  createDate?: Date;
 }

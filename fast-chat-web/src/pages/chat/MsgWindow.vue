@@ -32,7 +32,13 @@ const props = defineProps({
 						"
 					/>
 					<div class="content">
-						<p class="userName">{{ msg.userId }}</p>
+						<p class="userName">
+							{{
+								msg.userId == chat?.userInfo?.userId
+									? chat?.userInfo?.userName
+									: friend.userName
+							}}
+						</p>
 						<p class="msg">{{ msg.content }}</p>
 					</div>
 				</div>

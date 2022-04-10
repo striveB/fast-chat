@@ -32,9 +32,11 @@ function setSideActive(sideLeft: boolean, sideRight: boolean): void {
 		<div class="con root">
 			<root-head></root-head>
 			<div class="show-area">
-				<transition name="fade">
-					<router-view></router-view>
-				</transition>
+				<router-view v-slot="{ Component }">
+					<transition name="fade">
+						<component :is="Component"></component>
+					</transition>
+				</router-view>
 			</div>
 		</div>
 		<div class="con side side-right" :class="{ active: sideActive[1] }">

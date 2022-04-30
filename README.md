@@ -282,7 +282,12 @@ export default defineConfig({
   <span @click="navigate" @keypress.enter="navigate" role="link">About Us</span>
 </router-link>
 ```
-
+## 3.5 数据库中存储Emoji表情
+修改需要存储`emoji`表情字段的编码格式为`utf8mb4`
+```mysql
+ALTER TABLE `comment` 
+CHANGE COLUMN `content` `content` VARCHAR(1000) CHARACTER SET 'utf8mb4' NOT NULL;
+```
 # 五、插件安装
 
 ## 4.1 enquire.js

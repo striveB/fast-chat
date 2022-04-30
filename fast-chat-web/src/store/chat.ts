@@ -25,12 +25,12 @@ export const chatStore = defineStore('chatStore', {
 		};
 	},
 	actions: {
-		connectSocket(userInfo: User) {
+		connectSocket(userInfo: User | null) {
 			if (userInfo) {
 				localStorage.setItem('userInfo', JSON.stringify(userInfo));
 			}
 			this.userInfo =
-				JSON.parse(localStorage.getItem('userInfo')!) || this.userInfo;
+				JSON.parse(localStorage.getItem('userInfo') || '') || this.userInfo;
 			const socket: Socket = io('', {
 				query: {
 					userId: this.userInfo?.userId

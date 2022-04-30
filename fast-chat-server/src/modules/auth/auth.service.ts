@@ -15,7 +15,7 @@ export class AuthService {
   ) {}
 
   async login(user: User) {
-      let {userName, userPassword} = user;
+    let {userName, userPassword} = user;
     try {
       const user = await this.userRepository
         .createQueryBuilder('user')
@@ -23,9 +23,9 @@ export class AuthService {
           `user.userName = '${userName}' and user.userPassword = '${userPassword}'`,
         )
         .getOne();
-      const token = this.createToken(user);
-      delete user.userPassword;
       if (user) {
+        const token = this.createToken(user);
+        delete user.userPassword;
         return {
           code: RCode.OK,
           msg: '登录成功！',

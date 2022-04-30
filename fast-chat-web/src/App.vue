@@ -6,10 +6,8 @@ const setting = settingStore();
 const chat = chatStore();
 if (!chat.socket && localStorage.getItem('userInfo')) {
 	//连接socket
-	chat.connectSocket();
+	chat.connectSocket(null);
 }
-//断开socket连接
-// window.addEventListener('unload', () => chat.socket?.disconnected);
 //检测是否为移动端
 enquireScreen((is: boolean) => setting.toMobile(is));
 </script>

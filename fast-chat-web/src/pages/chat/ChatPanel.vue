@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { message as aMessage } from 'ant-design-vue';
-import { ref, onDeactivated, onBeforeUnmount } from 'vue';
+import { ref, onBeforeUnmount } from 'vue';
 import { useRoute } from 'vue-router';
 import { chatStore } from '../../store/chat';
 import MsgWindow from './MsgWindow.vue';
@@ -41,10 +41,7 @@ onBeforeUnmount(() => {
 <template>
 	<div class="chatPanel">
 		<div class="messages" ref="msgEl" id="msgEl">
-			<msg-window
-				:messages="chat.messages"
-				:friend="chat.chatFriend"
-			></msg-window>
+			<MsgWindow :messages="chat.messages" :friend="chat.chatFriend" />
 		</div>
 		<div class="footer">
 			<div class="msgSend">
